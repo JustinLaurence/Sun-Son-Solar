@@ -18,6 +18,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
 INSERT INTO users (first_name, last_name, middle_name, birthdate, gender, email, phone_number, address, department, role, username, password) 
 VALUES (
     'Katherine', 
@@ -31,8 +32,9 @@ VALUES (
     'Management',
     'Admin',
     'KittyKat16', 
-    'K@TSunShine16'
+    '$2b$12$pUwwsbdtbfIjDdUHFugmbeaQWEAL2n3m8fETW4BSj69W1.8Unmkv.'
 );
+
 
 INSERT INTO users (first_name, last_name, middle_name, birthdate, gender, email, phone_number, address, department, role, username, password) 
 VALUES (
@@ -47,5 +49,5 @@ VALUES (
     'IT',
     'Admin',
     'admin', 
-    'admin123'
+    '$2b$12$IxQRkpJ.T0q8/ORoP.W8CucYJobBIN3J4FCM.Xrn1NbubdafGGoAG'
 );
