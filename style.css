@@ -1,0 +1,134 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background: url('solar_panel.avif') center/cover no-repeat;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0 0 0 40%; 
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  mask-image: linear-gradient(to right, transparent, black 35%);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 35%);
+}
+
+.quote {
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  color: #fff;
+  max-width: 400px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+.quote h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  transform: translateY(-50%);
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.login-box h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #111;
+}
+
+input[type="text"], 
+input[type="password"],
+input[type="email"],
+input[type="date"],
+select,
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  outline: none;
+  font-size: 1rem;
+  margin: 8px 0 20px;
+  border: 1px solid #ccc;
+}
+
+input:focus, select:focus {
+  border-color: #111;
+}
+
+button {
+  background: #111;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #333;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+a {
+  color: #111;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.signup {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.85rem;
+}
+
+.error {
+  color: #d9534f;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.success {
+  color: #5cb85c;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+@media (max-width: 800px) {
+  .overlay, .quote { display: none; }
+  .login-box {
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 90%;
+  }
+}

@@ -1,7 +1,10 @@
 CREATE DATABASE IF NOT EXISTS sunson;
 USE sunson;
 
+<<<<<<< HEAD
 -- 1. Users Table (Handles Customers, Employees, and Admins)
+=======
+>>>>>>> main
 CREATE TABLE users (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -19,7 +22,11 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+<<<<<<< HEAD
 -- Insert Katherine Sinagaraw's Admin Account
+=======
+
+>>>>>>> main
 INSERT INTO users (first_name, last_name, middle_name, birthdate, gender, email, phone_number, address, department, role, username, password) 
 VALUES (
     'Katherine', 
@@ -33,10 +40,17 @@ VALUES (
     'Management',
     'Admin',
     'KittyKat16', 
+<<<<<<< HEAD
     'K@TSunShine16'
 );
 
 -- Insert Sol Solis's Admin Account
+=======
+    '$2b$12$pUwwsbdtbfIjDdUHFugmbeaQWEAL2n3m8fETW4BSj69W1.8Unmkv.'
+);
+
+
+>>>>>>> main
 INSERT INTO users (first_name, last_name, middle_name, birthdate, gender, email, phone_number, address, department, role, username, password) 
 VALUES (
     'Sol', 
@@ -50,6 +64,7 @@ VALUES (
     'IT',
     'Admin',
     'admin', 
+<<<<<<< HEAD
     'admin123'
 );
 
@@ -61,4 +76,7 @@ CREATE TABLE attendance_logs (
     time_in DATETIME DEFAULT CURRENT_TIMESTAMP,
     coordinates VARCHAR(100) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+=======
+    '$2b$12$IxQRkpJ.T0q8/ORoP.W8CucYJobBIN3J4FCM.Xrn1NbubdafGGoAG'
+>>>>>>> main
 );
