@@ -1,6 +1,3 @@
-# Sun Son Solar Registration System
-
-# Project Title
 Sun Son Solar Registration System
 
 # Description
