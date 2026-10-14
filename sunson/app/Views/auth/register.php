@@ -54,13 +54,6 @@
       <input type="tel" name="phone_number" value="<?= esc(old('phone_number')) ?>" required>
       <label>Address</label>
       <textarea name="address" rows="2" required><?= esc(old('address')) ?></textarea>
-      <label>Department (employees only)</label>
-      <select name="department">
-        <option value="">None / Customer</option>
-        <?php foreach (['Administration', 'IT', 'Dispatch', 'Accounting', 'HR', 'Marketing', 'Sales', 'Customer Service'] as $d): ?>
-          <option value="<?= esc($d) ?>" <?= old('department') === $d ? 'selected' : '' ?>><?= esc($d) ?></option>
-        <?php endforeach; ?>
-      </select>
       <label>Username</label>
       <input type="text" name="username" value="<?= esc(old('username')) ?>" required>
       <label>Password</label>

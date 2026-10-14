@@ -60,7 +60,6 @@ class Auth extends BaseController
             'email'        => 'required|valid_email|max_length[100]|is_unique[users.email]',
             'phone_number' => 'required|regex_match[/^[0-9+\-\s]{7,20}$/]',
             'address'      => 'required|max_length[500]',
-            'department'   => 'permit_empty|in_list[Administration,IT,Dispatch,Accounting,HR,Marketing,Sales,Customer Service]',
             'username'     => 'required|max_length[50]|is_unique[users.username]',
             'password'     => 'required|min_length[8]',
         ];
@@ -78,7 +77,8 @@ class Auth extends BaseController
             'email'        => $this->request->getPost('email'),
             'phone_number' => $this->request->getPost('phone_number'),
             'address'      => $this->request->getPost('address'),
-            'department'   => $this->request->getPost('department') ?: null,
+            'department'   => null,
+            'role'         => 'Customer',
             'username'     => $this->request->getPost('username'),
             'password'     => $this->request->getPost('password'),
         ]);
