@@ -13,6 +13,9 @@
   </div>
   <div class="login-box">
     <h1>Welcome back</h1>
+    <?php if (session('success')): ?>
+      <p class="success"><?= esc(session('success')) ?></p>
+    <?php endif; ?>
     <?php if (session('error')): ?>
       <p class="error"><?= esc(session('error')) ?></p>
     <?php endif; ?>
@@ -23,11 +26,10 @@
       <label>Password</label>
       <input type="password" name="password" required>
       <div class="options">
-        <label><input type="checkbox"> Remember me</label>
-        <a href="#">Forgot password?</a>
+        <span>Customer and employee sign-in</span>
       </div>
       <button type="submit" name="login">Log In</button>
-      <p class="signup">Don't have an account? <a href="<?= site_url('register') ?>">Sign Up</a></p>
+      <p class="signup">Customers can <a href="<?= site_url('register') ?>">create an account</a>. Employee accounts are created by Admin or HR.</p>
     </form>
   </div>
   <script src="<?= base_url('js/script.js') ?>"></script>

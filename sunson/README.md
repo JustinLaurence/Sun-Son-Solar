@@ -79,14 +79,32 @@ Additionally, make sure that the following extensions are enabled in your PHP:
    php spark migrate
    ```
 
-   This creates the `users` table required for account registration and login.
+   This creates the users, booking, payment, attendance, notifications, support,
+   quote, service settings, preferences, problem report, and audit tables.
+5. Seed the initial Admin accounts:
 
-The users migration is already included, so do not generate it again during setup. If
-you need to scaffold it in a fresh copy before adding its code, run:
+   ```powershell
+   php spark db:seed UserSeeder
+   ```
+
+   The seeder stores bcrypt hashes and marks both initial accounts as requiring
+   a password change. Do not publish or store their initial passwords in source
+   control. Customers register at `/register`; employee accounts are created
+   from the Admin or HR dashboard. Sol's email uses the existing
+   `sol.solis@sunsonsolar.com` address; confirm the domain if it should differ.
+
+The Admin dashboard includes manually recorded payments and receipt numbers for
+completed services; it is not connected to a payment gateway. Email/SMS sending
+and password reset links are not enabled until an email/SMS provider is
+configured. Portal announcements, booking updates, customer support tickets,
+and service settings are stored in the application database.
+
+The users migrations are already included, so do not generate them again during
+setup. If you need to scaffold the initial migration in a fresh copy before
+adding its code, run:
 
 ```powershell
 php spark migrate:create CreateUsers
 ```
 
-For future schema changes, replace `CreateUsers` with a new migration name, edit the
-generated file, and then run `php spark migrate`.
+For future schema changes, create a new migration and then run `php spark migrate`.
