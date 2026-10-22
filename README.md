@@ -38,7 +38,11 @@ Composer, and MySQL/MariaDB.
    ```powershell
    php spark migrate
    php spark db:seed UserSeeder
+   php spark db:seed ProductSeeder
    ```
+
+   The product seeder adds sample catalog items with online image URLs. Update
+   the product records in your database to match the client's actual inventory.
 
 5. Start the web server:
 

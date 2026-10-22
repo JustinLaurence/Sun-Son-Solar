@@ -34,3 +34,50 @@ Stack trace:
 #12 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Boot.php(166): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
 #13 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
 #14 {main}
+ERROR - 2026-10-22 23:13:25 --> Error connecting to the database: mysqli_sql_exception: Access denied for user ''@'localhost' (using password: NO) in C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('localhost', '', Object(SensitiveParameterValue), '', 3306, '', 0)
+#1 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(1706): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#4 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(1726): CodeIgniter\Database\BaseConnection->listTables()
+#5 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\MigrationRunner.php(821): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#6 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\MigrationRunner.php(699): CodeIgniter\Database\MigrationRunner->ensureTable()
+#7 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Commands\Database\MigrateStatus.php(115): CodeIgniter\Database\MigrationRunner->getHistory('')
+#8 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\CLI\Commands.php(72): CodeIgniter\Commands\Database\MigrateStatus->run(Array)
+#9 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate:status', Array)
+#10 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Boot.php(444): CodeIgniter\CLI\Console->run()
+#11 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Boot.php(166): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user ''@'localhost' (using password: NO) in C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\MySQLi\Connection.php:231
+Stack trace:
+#0 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(1706): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#3 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\BaseConnection.php(1726): CodeIgniter\Database\BaseConnection->listTables()
+#4 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\MigrationRunner.php(821): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#5 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Database\MigrationRunner.php(699): CodeIgniter\Database\MigrationRunner->ensureTable()
+#6 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Commands\Database\MigrateStatus.php(115): CodeIgniter\Database\MigrationRunner->getHistory('')
+#7 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\CLI\Commands.php(72): CodeIgniter\Commands\Database\MigrateStatus->run(Array)
+#8 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate:status', Array)
+#9 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Boot.php(444): CodeIgniter\CLI\Console->run()
+#10 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\system\Boot.php(166): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#11 C:\Users\eisen\Downloads\sunson github\Sun-Son-Solar\sunson\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#12 {main}
+CRITICAL - 2026-10-22 23:13:25 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user ''@'localhost' (using password: NO)
+[Method: CLI, Route: migrate:status]
+in SYSTEMPATH\Database\BaseConnection.php on line 606.
+ 1 SYSTEMPATH\Database\BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH\Database\BaseConnection.php(1706): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FROM ')
+ 3 SYSTEMPATH\Database\BaseConnection.php(1726): CodeIgniter\Database\BaseConnection->listTables()
+ 4 SYSTEMPATH\Database\MigrationRunner.php(821): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+ 5 SYSTEMPATH\Database\MigrationRunner.php(699): CodeIgniter\Database\MigrationRunner->ensureTable()
+ 6 SYSTEMPATH\Commands\Database\MigrateStatus.php(115): CodeIgniter\Database\MigrationRunner->getHistory('')
+ 7 SYSTEMPATH\CLI\Commands.php(72): CodeIgniter\Commands\Database\MigrateStatus->run([])
+ 8 SYSTEMPATH\CLI\Console.php(47): CodeIgniter\CLI\Commands->run('migrate:status', [])
+ 9 SYSTEMPATH\Boot.php(444): CodeIgniter\CLI\Console->run()
+10 SYSTEMPATH\Boot.php(166): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+11 ROOTPATH\spark(87): CodeIgniter\Boot::bootSpark(Object(Config\Paths))

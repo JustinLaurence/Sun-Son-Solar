@@ -3,6 +3,7 @@
 use CodeIgniter\Router\RouteCollection;
 
 $routes->get('/', 'Home::index');
+$routes->get('products', 'Products::index');
 $routes->get('login', 'Auth::login');
 $routes->post('login', 'Auth::attemptLogin');
 $routes->get('register', 'Auth::register');

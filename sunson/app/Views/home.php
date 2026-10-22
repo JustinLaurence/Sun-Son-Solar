@@ -15,6 +15,7 @@
     </a>
     <nav class="main-nav" aria-label="Main navigation">
       <a href="#services">Services</a>
+      <a href="<?= site_url('products') ?>">Products</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
       <a href="<?= site_url('login') ?>">Login</a>
@@ -113,6 +114,7 @@
         <article><span aria-hidden="true">⌂</span><h3>Racking &amp; mounting</h3><p>Secure, roof-ready mounting for your installation.</p></article>
         <article><span aria-hidden="true">↗</span><h3>Wires &amp; balance of system</h3><p>Essential connections specified for safe operation.</p></article>
       </div>
+      <a class="button button-primary catalog-home-link" href="<?= site_url('products') ?>">Browse the product catalog <span aria-hidden="true">→</span></a>
     </section>
 
     <section class="story-section" aria-labelledby="story-title">
