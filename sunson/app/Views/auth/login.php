@@ -7,9 +7,14 @@
 </head>
 <body>
   <div class="overlay"></div>
+  <a class="home-link" href="<?= site_url('/') ?>" aria-label="Back to homepage">
+    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+      <path d="M19 12H5m0 0 7 7m-7-7 7-7"></path>
+    </svg>
+  </a>
   <div class="quote">
-    <h2>“To illuminate a sustainable future by merging clean energy with intelligent design.”</h2>
-    <p>— Katherine "Kat" Sinagaraw</p>
+    <h2>Power Your Future with Solar</h2>
+    <p>Make the switch to dependable, thoughtfully designed solar energy with a team that is with you at every step.</p>
   </div>
   <div class="login-box">
     <h1>Welcome back</h1>
