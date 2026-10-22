@@ -1,20 +1,54 @@
-<<<<<<< HEAD
-PowerCoders
+# Sun Son Solar
 
-# Sun Son Solar Registration System
+The CodeIgniter 4 application is in the `sunson` directory. Each teammate runs
+their own local copy; cloning the repository does not publish the UI as a
+hosted website.
 
-# Description
-The Sun Son Solar Registration System is a web-based registration system for Sun Son Solar.The system allows customers and employees to register their information. The registration form collects the personal information and account information needed by the company.The system stores the registered user's information in the database.
-=======
-Sun Son Solar - Web Portal
+## Run locally with XAMPP
 
-Team Name: PowerCoders
-Project Title: Sun Son Solar Authentication & Dashboard System  
+Requirements: PHP 8.2 or newer with `intl`, `mbstring`, and `mysqli` enabled,
+Composer, and MySQL/MariaDB.
 
- System Description
-This project is a modern, web-based authentication and management portal developed for Sun Son Solar, a premium solar energy equipment and services company. Built with PHP, MySQL (PDO), and raw CSS (featuring a responsive, glassmorphism UI), the system provides secure access and tailored dashboards based on distinct user roles:
+1. Clone the repository, then open a terminal in the application directory:
 
-Admin: A centralized control panel to manage user accounts, system settings, and monitor field technician attendance logs.
-Employee (Technician): A dedicated workspace for job assignments, scheduling, and a geolocation-powered "Site Time-In" feature that captures live GPS coordinates when technicians arrive at an installation site.
-Customer: A clean, e-commerce-inspired interface where clients can browse top categories for solar products (panels, inverters, batteries) and available services (installation, maintenance, repair).
->>>>>>> 952aea6c380a811049a27a5d3fe6450ce2a863f9
+   ```powershell
+   cd sunson
+   ```
+
+2. Install PHP dependencies and create your private local configuration:
+
+   ```powershell
+   composer install
+   Copy-Item .env.example .env
+   ```
+
+   Edit `.env` if your local MySQL username, password, or port differs from the
+   XAMPP defaults. Do not commit `.env`.
+
+3. Start MySQL from the XAMPP Control Panel, then create the local database
+   (or create it in phpMyAdmin):
+
+   ```powershell
+   C:\xampp\mysql\bin\mysql.exe -u root -e "CREATE DATABASE sunson CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+   ```
+
+4. Create the tables and seed the initial accounts:
+
+   ```powershell
+   php spark migrate
+   php spark db:seed UserSeeder
+   ```
+
+5. Start the web server:
+
+   ```powershell
+   php spark serve
+   ```
+
+   Open **http://localhost:8080/**. Do not open the PHP files directly or serve
+   the repository root; the web root is `sunson/public`.
+
+If `php` is not recognized, add your PHP installation directory (for XAMPP,
+usually `C:\xampp\php`) to the Windows `Path`, reopen the terminal, and retry.
+If using Apache instead of `php spark serve`, configure its document root to
+`sunson/public` and set `app.baseURL` in `.env` to the matching local URL.
