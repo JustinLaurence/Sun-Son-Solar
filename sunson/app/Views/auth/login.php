@@ -7,12 +7,20 @@
 </head>
 <body>
   <div class="overlay"></div>
+  <a class="home-link" href="<?= site_url('/') ?>" aria-label="Back to homepage">
+    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+      <path d="M19 12H5m0 0 7 7m-7-7 7-7"></path>
+    </svg>
+  </a>
   <div class="quote">
-    <h2>“To illuminate a sustainable future by merging clean energy with intelligent design.”</h2>
-    <p>— Katherine "Kat" Sinagaraw</p>
+    <h2>Power Your Future with Solar</h2>
+    <p>Make the switch to dependable, thoughtfully designed solar energy with a team that is with you at every step.</p>
   </div>
   <div class="login-box">
     <h1>Welcome back</h1>
+    <?php if (session('success')): ?>
+      <p class="success"><?= esc(session('success')) ?></p>
+    <?php endif; ?>
     <?php if (session('error')): ?>
       <p class="error"><?= esc(session('error')) ?></p>
     <?php endif; ?>
@@ -23,11 +31,10 @@
       <label>Password</label>
       <input type="password" name="password" required>
       <div class="options">
-        <label><input type="checkbox"> Remember me</label>
-        <a href="#">Forgot password?</a>
+        <span>Customer and employee sign-in</span>
       </div>
       <button type="submit" name="login">Log In</button>
-      <p class="signup">Don't have an account? <a href="<?= site_url('register') ?>">Sign Up</a></p>
+      <p class="signup">Customers can <a href="<?= site_url('register') ?>">create an account</a>. Employee accounts are created by Admin or HR.</p>
     </form>
   </div>
   <script src="<?= base_url('js/script.js') ?>"></script>

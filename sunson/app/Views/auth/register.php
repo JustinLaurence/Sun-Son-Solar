@@ -7,14 +7,23 @@
 </head>
 <body>
   <div class="overlay"></div>
+  <a class="home-link" href="<?= site_url('/') ?>" aria-label="Back to homepage">
+    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+      <path d="M19 12H5m0 0 7 7m-7-7 7-7"></path>
+    </svg>
+  </a>
   <div class="quote">
-    <h2>“To illuminate a sustainable future by merging clean energy with intelligent design.”</h2>
-    <p>— Katherine "Kat" Sinagaraw</p>
+    <h2>Power Your Future with Solar</h2>
+    <p>Make the switch to dependable, thoughtfully designed solar energy with a team that is with you at every step.</p>
   </div>
   <div class="login-box" style="top: 50%; transform: translateY(-50%); max-width: 520px;">
-    <h1>Create Account</h1>
+    <h1>Customer Registration</h1>
+    <p>Employee accounts are created by Admin or HR.</p>
     <?php if (session('success')): ?>
       <p class="success"><?= esc(session('success')) ?> <a href="<?= site_url('login') ?>">Login here</a></p>
+    <?php endif; ?>
+    <?php if (session('error')): ?>
+      <p class="error"><?= esc(session('error')) ?></p>
     <?php endif; ?>
     <?php if (session('errors')): ?>
       <?php foreach (session('errors') as $e): ?>
@@ -45,6 +54,8 @@
           <select name="gender" required>
             <option value="Male" <?= old('gender') === 'Male' ? 'selected' : '' ?>>Male</option>
             <option value="Female" <?= old('gender') === 'Female' ? 'selected' : '' ?>>Female</option>
+            <option value="Other" <?= old('gender') === 'Other' ? 'selected' : '' ?>>Other</option>
+            <option value="Prefer not to say" <?= old('gender') === 'Prefer not to say' ? 'selected' : '' ?>>Prefer not to say</option>
           </select>
         </div>
       </div>
@@ -54,17 +65,10 @@
       <input type="tel" name="phone_number" value="<?= esc(old('phone_number')) ?>" required>
       <label>Address</label>
       <textarea name="address" rows="2" required><?= esc(old('address')) ?></textarea>
-      <label>Department (employees only)</label>
-      <select name="department">
-        <option value="">None / Customer</option>
-        <?php foreach (['Administration', 'IT', 'Dispatch', 'Accounting', 'HR', 'Marketing', 'Sales', 'Customer Service'] as $d): ?>
-          <option value="<?= esc($d) ?>" <?= old('department') === $d ? 'selected' : '' ?>><?= esc($d) ?></option>
-        <?php endforeach; ?>
-      </select>
       <label>Username</label>
       <input type="text" name="username" value="<?= esc(old('username')) ?>" required>
       <label>Password</label>
-      <input type="password" name="password" minlength="8" required>
+      <input type="password" name="password" minlength="12" required>
       <button type="submit" name="register">Sign Up</button>
       <p class="signup">Already have an account? <a href="<?= site_url('login') ?>">Log In</a></p>
     </form>

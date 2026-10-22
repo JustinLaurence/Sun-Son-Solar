@@ -59,3 +59,52 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 - json (enabled by default - don't turn it off)
 - [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
 - [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+
+## Local Database Setup
+
+1. Start Apache and MySQL from the XAMPP Control Panel.
+2. In `.env`, enable and set the database connection values for your local MySQL
+   installation. For a default XAMPP install, use `localhost`, database `sunson`,
+   username `root`, an empty password, and driver `MySQLi`.
+3. Create the empty database from a terminal:
+
+   ```powershell
+   C:\xampp\mysql\bin\mysql.exe -u root -e "CREATE DATABASE sunson CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+   ```
+
+   If the MySQL root account has a password, add `-p` after `-u root`.
+4. From the project directory, run the migrations:
+
+   ```powershell
+   php spark migrate
+   ```
+
+   This creates the users, booking, payment, attendance, notifications, support,
+   quote, service settings, preferences, problem report, and audit tables.
+5. Seed the initial Admin accounts:
+
+   ```powershell
+   php spark db:seed UserSeeder
+   ```
+
+   The seeder stores bcrypt hashes and marks both initial accounts as requiring
+   a password change. Do not publish or store their initial passwords in source
+   control. Customers register at `/register`; employee accounts are created
+   from the Admin or HR dashboard. Sol's email uses the existing
+   `sol.solis@sunsonsolar.com` address; confirm the domain if it should differ.
+
+The Admin dashboard includes manually recorded payments and receipt numbers for
+completed services; it is not connected to a payment gateway. Email/SMS sending
+and password reset links are not enabled until an email/SMS provider is
+configured. Portal announcements, booking updates, customer support tickets,
+and service settings are stored in the application database.
+
+The users migrations are already included, so do not generate them again during
+setup. If you need to scaffold the initial migration in a fresh copy before
+adding its code, run:
+
+```powershell
+php spark migrate:create CreateUsers
+```
+
+For future schema changes, create a new migration and then run `php spark migrate`.

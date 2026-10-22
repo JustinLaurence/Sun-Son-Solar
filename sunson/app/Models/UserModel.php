@@ -13,7 +13,7 @@ class UserModel extends Model
     protected $allowedFields = [
         'first_name', 'last_name', 'middle_name', 'birthdate', 'gender',
         'email', 'phone_number', 'address', 'department', 'role',
-        'username', 'password',
+        'username', 'password', 'is_active', 'must_change_password',
     ];
 
     protected $beforeInsert = ['hashPassword'];
@@ -22,7 +22,7 @@ class UserModel extends Model
     protected function hashPassword(array $data): array
     {
         if (isset($data['data']['password'])) {
-            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
+            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_BCRYPT);
         }
 
         return $data;
