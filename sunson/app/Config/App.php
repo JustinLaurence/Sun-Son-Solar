@@ -18,6 +18,24 @@ class App extends BaseConfig
      */
     public string $baseURL = 'http://localhost:8080/';
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $configuredBaseURL = env('app.baseURL');
+        if (
+            PHP_SAPI === 'cli'
+            || ! isset($_SERVER['HTTP_HOST'], $_SERVER['SCRIPT_NAME'])
+            || ($configuredBaseURL !== null && $configuredBaseURL !== '' && $configuredBaseURL !== 'http://localhost:8080/')
+        ) {
+            return;
+        }
+
+        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+        $basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/.');
+        $this->baseURL = $scheme . '://' . $_SERVER['HTTP_HOST'] . ($basePath === '' ? '/' : $basePath . '/');
+    }
+
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
      * If you want to accept multiple Hostnames, set this.

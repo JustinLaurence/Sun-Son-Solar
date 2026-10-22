@@ -22,8 +22,9 @@ Composer, and MySQL/MariaDB.
    Copy-Item .env.example .env
    ```
 
-   Edit `.env` if your local MySQL username, password, or port differs from the
-   XAMPP defaults. Do not commit `.env`.
+   The app detects its local web URL automatically. Edit `.env` if your local
+   MySQL username, password, or port differs from the XAMPP defaults. Do not
+   commit `.env`.
 
 3. Start MySQL from the XAMPP Control Panel, then create the local database
    (or create it in phpMyAdmin):
@@ -48,7 +49,12 @@ Composer, and MySQL/MariaDB.
    Open **http://localhost:8080/**. Do not open the PHP files directly or serve
    the repository root; the web root is `sunson/public`.
 
+The admin dashboard loads Chart.js from jsDelivr, so an internet connection is
+needed to render its charts. The underlying chart data remains available in the
+dashboard if the chart library cannot load.
+
 If `php` is not recognized, add your PHP installation directory (for XAMPP,
 usually `C:\xampp\php`) to the Windows `Path`, reopen the terminal, and retry.
 If using Apache instead of `php spark serve`, configure its document root to
-`sunson/public` and set `app.baseURL` in `.env` to the matching local URL.
+`sunson/public`. If you explicitly set `app.baseURL` in `.env`, make sure it
+matches the URL and project path where Apache serves the app.

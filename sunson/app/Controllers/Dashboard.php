@@ -103,6 +103,27 @@ class Dashboard extends BaseController
                 'bookings' => $db->table('service_bookings')->countAllResults(),
                 'revenue' => $db->table('payments')->selectSum('amount', 'total')->get()->getRow()->total ?? 0,
             ];
+            $rangeStart = new \DateTimeImmutable('first day of this month');
+            $rangeStart = $rangeStart->modify('-5 months');
+            $rangeEnd = $rangeStart->modify('+6 months');
+            $revenueRows = $db->table('payments')
+                ->select('YEAR(paid_at) AS paid_year, MONTH(paid_at) AS paid_month, SUM(amount) AS total', false)
+                ->where('paid_at >=', $rangeStart->format('Y-m-d H:i:s'))
+                ->where('paid_at <', $rangeEnd->format('Y-m-d H:i:s'))
+                ->groupBy('paid_year')
+                ->groupBy('paid_month')
+                ->get()->getResultArray();
+            $revenueByMonth = [];
+            foreach ($revenueRows as $revenueRow) {
+                $monthKey = sprintf('%04d-%02d', (int) $revenueRow['paid_year'], (int) $revenueRow['paid_month']);
+                $revenueByMonth[$monthKey] = (float) $revenueRow['total'];
+            }
+            $data['monthlyRevenue'] = ['labels' => [], 'values' => []];
+            for ($monthOffset = 0; $monthOffset < 6; $monthOffset++) {
+                $month = $rangeStart->modify("+{$monthOffset} months");
+                $data['monthlyRevenue']['labels'][] = $month->format('M Y');
+                $data['monthlyRevenue']['values'][] = round($revenueByMonth[$month->format('Y-m')] ?? 0, 2);
+            }
             $data['serviceUsage'] = $db->table('service_bookings')
                 ->select('service_type, COUNT(*) AS total')->groupBy('service_type')
                 ->orderBy('total', 'DESC')->get()->getResultArray();

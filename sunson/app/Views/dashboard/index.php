@@ -35,6 +35,76 @@
         <article><span>Service bookings</span><strong><?= esc((string) $metrics['bookings']) ?></strong></article>
         <article><span>Recorded service revenue</span><strong><?= esc(number_format((float) $metrics['revenue'], 2)) ?></strong></article>
       </section>
+      <?php
+        $chartJsonFlags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
+        $usageLabels = array_column($serviceUsage, 'service_type');
+        $usageValues = array_map(static fn ($entry) => (int) $entry['total'], $serviceUsage);
+      ?>
+      <section class="dashboard-charts" aria-label="Business analytics">
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><p class="eyebrow">Customer base</p><h2>Customers &amp; bookings</h2></div></div>
+          <div class="chart-container">
+            <canvas
+              data-chart="bar"
+              data-labels="<?= esc(json_encode(['Customers', 'Bookings'], $chartJsonFlags), 'attr') ?>"
+              data-values="<?= esc(json_encode([(int) $metrics['customers'], (int) $metrics['bookings']], $chartJsonFlags), 'attr') ?>"
+              aria-label="Bar chart comparing customer and service booking totals"
+              role="img"></canvas>
+          </div>
+          <details class="chart-data">
+            <summary>View chart data</summary>
+            <table><thead><tr><th>Measure</th><th>Total</th></tr></thead><tbody>
+              <tr><td>Customers</td><td><?= esc((string) $metrics['customers']) ?></td></tr>
+              <tr><td>Bookings</td><td><?= esc((string) $metrics['bookings']) ?></td></tr>
+            </tbody></table>
+          </details>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><p class="eyebrow">Revenue trend</p><h2>Recorded revenue by month</h2></div></div>
+          <div class="chart-container">
+            <canvas
+              data-chart="line"
+              data-labels="<?= esc(json_encode($monthlyRevenue['labels'], $chartJsonFlags), 'attr') ?>"
+              data-values="<?= esc(json_encode($monthlyRevenue['values'], $chartJsonFlags), 'attr') ?>"
+              aria-label="Line chart of recorded service revenue for the last six months"
+              role="img"></canvas>
+          </div>
+          <details class="chart-data">
+            <summary>View chart data</summary>
+            <table><thead><tr><th>Month</th><th>Recorded revenue</th></tr></thead><tbody>
+              <?php foreach ($monthlyRevenue['labels'] as $index => $label): ?>
+                <tr><td><?= esc($label) ?></td><td><?= esc(number_format((float) $monthlyRevenue['values'][$index], 2)) ?></td></tr>
+              <?php endforeach; ?>
+            </tbody></table>
+          </details>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><p class="eyebrow">Service mix</p><h2>Bookings by service type</h2></div></div>
+          <?php if ($serviceUsage === []): ?>
+            <p class="empty-state">Service usage will appear when customers make bookings.</p>
+          <?php else: ?>
+            <div class="chart-container">
+              <canvas
+                data-chart="bar"
+                data-axis="y"
+                data-labels="<?= esc(json_encode($usageLabels, $chartJsonFlags), 'attr') ?>"
+                data-values="<?= esc(json_encode($usageValues, $chartJsonFlags), 'attr') ?>"
+                aria-label="Horizontal bar chart of booking totals by service type"
+                role="img"></canvas>
+            </div>
+            <details class="chart-data">
+              <summary>View chart data</summary>
+              <table><thead><tr><th>Service type</th><th>Bookings</th></tr></thead><tbody>
+                <?php foreach ($serviceUsage as $usage): ?>
+                  <tr><td><?= esc($usage['service_type']) ?></td><td><?= esc((string) $usage['total']) ?></td></tr>
+                <?php endforeach; ?>
+              </tbody></table>
+            </details>
+          <?php endif; ?>
+        </article>
+      </section>
     <?php endif; ?>
 
     <?php if ($user['role'] === 'customer'): ?>
@@ -165,25 +235,68 @@
 
     <?php if (in_array($user['role'], ['admin', 'dispatcher'], true)): ?>
       <section class="panel">
-        <div class="panel-heading"><div><p class="eyebrow">Service calendar</p><h2>All bookings</h2></div></div>
+        <div class="panel-heading"><div><p class="eyebrow">Service calendar</p><h2>Booking schedule</h2></div></div>
         <?php if ($bookings === []): ?><p class="empty-state">No service requests yet.</p><?php else: ?>
-          <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Service</th><th>Date</th><th>Address</th><th>Status</th><th>Review / assign</th></tr></thead><tbody>
+          <div class="service-calendar" data-service-calendar>
+            <div class="calendar-toolbar">
+              <div class="calendar-controls">
+                <button class="button button-outline button-small" type="button" data-calendar-previous aria-label="Previous month">Previous</button>
+                <button class="button button-outline button-small" type="button" data-calendar-today>Today</button>
+                <button class="button button-outline button-small" type="button" data-calendar-next aria-label="Next month">Next</button>
+              </div>
+              <h3 data-calendar-title aria-live="polite"></h3>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="calendar-days" data-calendar-days role="grid" aria-label="Service bookings by month"></div>
+            <p class="empty-state calendar-empty-month" data-calendar-empty hidden>No bookings scheduled in this month.</p>
+
+            <dialog class="booking-dialog" data-booking-dialog aria-labelledby="booking-dialog-title">
+              <div class="booking-dialog-header">
+                <h2 id="booking-dialog-title">Booking details</h2>
+                <button class="button button-quiet booking-dialog-close" type="button" data-calendar-close>Close</button>
+              </div>
+              <div data-booking-details></div>
+            </dialog>
+
+            <div hidden>
             <?php foreach ($bookings as $booking): ?>
-              <tr><td><?= esc($booking['customer_first_name'] . ' ' . $booking['customer_last_name']) ?></td><td><?= esc($booking['service_type']) ?></td><td><?= esc(date('M j, Y g:i A', strtotime($booking['scheduled_at']))) ?></td><td><?= esc($booking['address']) ?></td><td><?= esc(ucwords(str_replace('_', ' ', $booking['status']))) ?><?php if ($booking['receipt_number']): ?><br><span class="receipt-reference">Paid · <?= esc($booking['receipt_number']) ?></span><?php endif; ?></td><td>
-                <?php if ($booking['status'] === 'pending'): foreach (['approved' => 'Approve', 'declined' => 'Decline'] as $status => $label): ?>
-                  <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/review') ?>" method="post"><?= csrf_field() ?><input type="hidden" name="status" value="<?= esc($status) ?>"><button class="button button-small" type="submit"><?= esc($label) ?></button></form>
-                <?php endforeach; endif; ?>
-                <?php if (in_array($booking['status'], ['pending', 'approved', 'en_route', 'in_progress'], true)): ?>
-                  <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/assign') ?>" method="post"><?= csrf_field() ?><label class="sr-only" for="tech-<?= esc((string) $booking['id']) ?>">Assign technician</label><select id="tech-<?= esc((string) $booking['id']) ?>" name="technician_id" required><option value="">Assign technician</option><?php foreach ($technicians as $tech): ?><option value="<?= esc((string) $tech['id']) ?>"><?= esc($tech['first_name'] . ' ' . $tech['last_name']) ?></option><?php endforeach; ?></select><button class="button button-small" type="submit">Assign</button></form>
-                  <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/schedule') ?>" method="post"><?= csrf_field() ?><label class="sr-only" for="schedule-<?= esc((string) $booking['id']) ?>">Adjust booking time</label><input id="schedule-<?= esc((string) $booking['id']) ?>" type="datetime-local" name="scheduled_at" min="<?= esc(date('Y-m-d\TH:i', time() + 3600)) ?>" required><button class="button button-small" type="submit">Adjust time</button></form>
-                <?php endif; ?>
-                <?php if ($booking['status'] === 'completed' && ! $booking['receipt_number']): ?>
-                  <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/payments') ?>" method="post"><?= csrf_field() ?><label class="sr-only" for="amount-<?= esc((string) $booking['id']) ?>">Payment amount</label><input id="amount-<?= esc((string) $booking['id']) ?>" type="number" name="amount" min="0.01" step="0.01" value="<?= esc((string) ($booking['price'] ?? '')) ?>" placeholder="Amount" required><label class="sr-only" for="method-<?= esc((string) $booking['id']) ?>">Payment method</label><select id="method-<?= esc((string) $booking['id']) ?>" name="payment_method"><option>Cash</option><option>Bank Transfer</option><option>Card</option></select><button class="button button-small" type="submit">Record payment</button></form>
-                <?php endif; ?>
-                <?= esc(trim(($booking['technician_first_name'] ?? '') . ' ' . ($booking['technician_last_name'] ?? ''))) ?>
-              </td></tr>
+              <template
+                data-booking-id="<?= esc((string) $booking['id'], 'attr') ?>"
+                data-scheduled-at="<?= esc($booking['scheduled_at'], 'attr') ?>"
+                data-service-type="<?= esc($booking['service_type'], 'attr') ?>"
+                data-customer="<?= esc($booking['customer_first_name'] . ' ' . $booking['customer_last_name'], 'attr') ?>"
+                data-status="<?= esc($booking['status'], 'attr') ?>">
+                <article class="booking-detail">
+                  <dl class="booking-detail-grid">
+                    <div><dt>Customer</dt><dd><?= esc($booking['customer_first_name'] . ' ' . $booking['customer_last_name']) ?></dd></div>
+                    <div><dt>Service</dt><dd><?= esc($booking['service_type']) ?></dd></div>
+                    <div><dt>Scheduled</dt><dd><?= esc(date('M j, Y g:i A', strtotime($booking['scheduled_at']))) ?></dd></div>
+                    <div><dt>Status</dt><dd><?= esc(ucwords(str_replace('_', ' ', $booking['status']))) ?></dd></div>
+                    <div class="booking-detail-wide"><dt>Address</dt><dd><?= esc($booking['address']) ?></dd></div>
+                    <div><dt>Technician</dt><dd><?= esc(trim(($booking['technician_first_name'] ?? '') . ' ' . ($booking['technician_last_name'] ?? '')) ?: 'Not assigned') ?></dd></div>
+                    <?php if ($booking['receipt_number']): ?>
+                      <div><dt>Payment</dt><dd><?= esc(number_format((float) $booking['paid_amount'], 2)) ?> · <?= esc($booking['receipt_number']) ?></dd></div>
+                    <?php endif; ?>
+                  </dl>
+                  <div class="booking-actions">
+                    <?php if ($booking['status'] === 'pending'): foreach (['approved' => 'Approve', 'declined' => 'Decline'] as $status => $label): ?>
+                      <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/review') ?>" method="post"><?= csrf_field() ?><input type="hidden" name="status" value="<?= esc($status) ?>"><button class="button button-small" type="submit"><?= esc($label) ?></button></form>
+                    <?php endforeach; endif; ?>
+                    <?php if (in_array($booking['status'], ['pending', 'approved', 'en_route', 'in_progress'], true)): ?>
+                      <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/assign') ?>" method="post"><?= csrf_field() ?><label class="sr-only" for="tech-<?= esc((string) $booking['id']) ?>">Assign technician</label><select id="tech-<?= esc((string) $booking['id']) ?>" name="technician_id" required><option value="">Assign technician</option><?php foreach ($technicians as $tech): ?><option value="<?= esc((string) $tech['id']) ?>"><?= esc($tech['first_name'] . ' ' . $tech['last_name']) ?></option><?php endforeach; ?></select><button class="button button-small" type="submit">Assign</button></form>
+                      <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/schedule') ?>" method="post"><?= csrf_field() ?><label class="sr-only" for="schedule-<?= esc((string) $booking['id']) ?>">Adjust booking time</label><input id="schedule-<?= esc((string) $booking['id']) ?>" type="datetime-local" name="scheduled_at" min="<?= esc(date('Y-m-d\TH:i', time() + 3600)) ?>" required><button class="button button-small" type="submit">Adjust time</button></form>
+                    <?php endif; ?>
+                    <?php if ($booking['status'] === 'completed' && ! $booking['receipt_number']): ?>
+                      <form class="inline-form" action="<?= site_url('dashboard/bookings/' . $booking['id'] . '/payments') ?>" method="post"><?= csrf_field() ?><label class="sr-only" for="amount-<?= esc((string) $booking['id']) ?>">Payment amount</label><input id="amount-<?= esc((string) $booking['id']) ?>" type="number" name="amount" min="0.01" step="0.01" value="<?= esc((string) ($booking['price'] ?? '')) ?>" placeholder="Amount" required><label class="sr-only" for="method-<?= esc((string) $booking['id']) ?>">Payment method</label><select id="method-<?= esc((string) $booking['id']) ?>" name="payment_method"><option>Cash</option><option>Bank Transfer</option><option>Card</option></select><button class="button button-small" type="submit">Record payment</button></form>
+                    <?php endif; ?>
+                  </div>
+                </article>
+              </template>
             <?php endforeach; ?>
-          </tbody></table></div>
+            </div>
+          </div>
         <?php endif; ?>
       </section>
     <?php endif; ?>
@@ -260,14 +373,6 @@
       </section>
 
       <section class="panel">
-        <div class="panel-heading"><div><p class="eyebrow">Service usage</p><h2>Booking activity</h2></div></div>
-        <?php $maximumUsage = $serviceUsage === [] ? 1 : max(array_map(static fn ($entry) => (int) $entry['total'], $serviceUsage)); ?>
-        <?php if ($serviceUsage === []): ?><p class="empty-state">Service usage will appear when customers make bookings.</p><?php else: foreach ($serviceUsage as $usage): ?>
-          <div class="usage-row"><span><?= esc($usage['service_type']) ?></span><span class="usage-track"><span style="width: <?= esc((string) max(5, (int) round(((int) $usage['total'] / $maximumUsage) * 100))) ?>%"></span></span><strong><?= esc((string) $usage['total']) ?></strong></div>
-        <?php endforeach; endif; ?>
-      </section>
-
-      <section class="panel">
         <div class="panel-heading"><div><p class="eyebrow">Accountability</p><h2>Recent admin activity</h2></div></div>
         <?php if ($auditLogs === []): ?><p class="empty-state">Admin actions will appear here as they occur.</p><?php else: foreach ($auditLogs as $log): ?>
           <article class="record-card"><strong><?= esc($log['action']) ?> · <?= esc($log['first_name'] . ' ' . $log['last_name']) ?></strong><span><?= esc(date('M j, Y g:i A', strtotime($log['created_at']))) ?></span><p><?= esc($log['details'] ?? '') ?></p></article>
@@ -306,6 +411,13 @@
     </section>
   </main>
 
+  <?php if ($user['role'] === 'admin'): ?>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+    <script src="<?= base_url('js/dashboard-charts.js') ?>" defer></script>
+  <?php endif; ?>
+  <?php if (in_array($user['role'], ['admin', 'dispatcher'], true)): ?>
+    <script src="<?= base_url('js/schedule-calendar.js') ?>" defer></script>
+  <?php endif; ?>
   <script>
     document.querySelectorAll('[data-location-form]').forEach(function (form) {
       form.addEventListener('submit', function (event) {
